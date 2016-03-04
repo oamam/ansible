@@ -1,0 +1,50 @@
+- name: php7 関連モジュールのインストール
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - gcc-c++
+    - autoconf
+    - httpd-devel
+    - zlib-devel
+    - openssl-devel
+    - gd-devel
+    - libxml2-devel
+    - mysql-devel
+    - t1lib-devel
+    - bzip2-devel
+    - curl-devel
+    - gmp-devel
+    - aspell-devel
+    - recode-devel
+    - icu
+    - libicu-devel
+    - libmcrypt
+    - libmcrypt-devel
+    - php-intl
+
+- name: epel-release インストール
+  yum:
+    name: epel-release
+    state: present
+
+- name: remi-release-6.rpm の存在確認
+  command: rpm -q remi-release-6.6-2.el6.remi.noarch
+  register: result
+  changed_when: false
+  ignore_errors: yes
+
+- name: rpm -q remi-release-6.6-2.el6.remi.noarch 実行結果
+  debug:
+    var: result
+
+- name: remi-release-6.rpm のインストール
+  command: rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+  when: result.stdout.find('remi-release-6.6-2.el6.remi.noarch is not installed') != -1
+
+- name: php7 インストール
+  yum:
+    name: php
+    state: present
+    enablerepo: remi
+    enablerepo: remi-php70

@@ -1,0 +1,39 @@
+---
+- name: remi-release-6.6-2.el6.remi.noarch の存在確認
+  command: rpm -q remi-release-6.6-2.el6.remi.noarch
+  register: result
+  changed_when: false
+  ignore_errors: yes
+
+- name: remi-release-6.6-2.el6.remi.noarch のインストール
+  command: rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+  when: result.stdout.find('remi-release-6.6-2.el6.remi.noarch is not installed') != -1
+
+- name: remi-release-6.rpm の存在確認
+  command: rpm -q libicu-last-50.1.2-10.el6.remi.x86_64
+  register: result
+  changed_when: false
+  ignore_errors: yes
+
+- name: remi-release-6.rpm のインストール
+  command: rpm -ivh http://rpms.famillecollet.com/enterprise/6/remi/x86_64/libicu-last-50.1.2-10.el6.remi.x86_64.rpm
+  when: result.stdout.find('libicu-last-50.1.2-10.el6.remi.x86_64 is not installed') != -1
+
+- name: php5.6 インストール
+  yum:
+    name: '{{ item }}'
+    state: present
+    enablerepo: remi-php56,epel
+  with_items:
+    - php
+    - php-devel
+    - php-mbstring
+    - php-mcrypt
+    - php-pdo
+    - php-mysql
+    - php-dom
+    - php-pear
+    - php-intl
+    - php-pecl-xdebug
+    - libicu-devel
+    - libuuid-devel

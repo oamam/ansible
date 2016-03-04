@@ -1,0 +1,12 @@
+---
+- name: composer インストール確認
+  command: composer --version
+  register: result
+  changed_when: false
+  ignore_errors: yes
+
+- name: composer のインストール
+  shell: |
+    curl -sS https://getcomposer.org/installer | php
+    mv composer.phar /usr/local/bin/composer
+  when: result.rc != 0

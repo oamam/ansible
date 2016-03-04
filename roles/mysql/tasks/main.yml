@@ -1,0 +1,51 @@
+---
+- name: mysql community rpm の存在確認
+  command: rpm -q mysql-community-release-el6-5.noarch
+  register: result
+  changed_when: false
+  ignore_errors: yes
+
+- name: mysql community rpm のインストール
+  command: rpm -ivh http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+  when: result.stdout.find('mysql-community-release-el6-5.noarch is not installed') != -1
+
+- name: mysql-server のインストール
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - mysql-server
+    - mysql-devel
+    - MySQL-python
+    - libselinux-python
+
+- name: mysqld service の常時起動
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: my.cnf ファイルのコピー
+  template:
+    src: .my.cnf.j2
+    dest: ~/.my.cnf
+  notify: restart mysqld
+
+- name: root アカウントのパスワードの設定
+  mysql_user:
+    name: root
+    password: "{{ mysql_root_password }}"
+    check_implicit_admin: yes
+
+- name: データベース {{ mysql_app_db }} の作成
+  mysql_db:
+    name: "{{ mysql_app_db }}"
+    state: present
+
+- name: ユーザー "{{ mysql_app_user }}" の作成
+  mysql_user:
+    name: "{{ mysql_app_user }}"
+    password: "{{ mysql_app_password }}"
+    priv: "{{ mysql_app_db }}.*:ALL"
+    host: localhost
+    state: present

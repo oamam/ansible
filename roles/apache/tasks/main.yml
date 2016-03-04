@@ -1,0 +1,11 @@
+---
+- name: httpd インストール
+  yum:
+    name: httpd
+    state: present
+
+- name: httpd service の常時起動
+  service:
+    name: httpd
+    state: started
+    enabled: yes

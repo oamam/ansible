@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  become: yes
+  roles:
+    - {role: selinux, tags: ["common"]}
+    - {role: base, tags: ["common"]}
+    - {role: apache, tags: ["php"]}
+    - {role: mysql, tags: ["common"]}
+    - {role: php, tags: ["php"]}
+    - {role: php7, tags: ["php7"]}
+    - {role: ruby, tags: ["ruby"]}
+    - {role: python, tags: ["python"]}
+
+  vars:
+    mysql_root_password: password
+    mysql_app_db: app_db
+    mysql_app_user: app_user
+    mysql_app_password: app_password
