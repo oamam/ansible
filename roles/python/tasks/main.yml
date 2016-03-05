@@ -16,4 +16,5 @@
     make install
     unlink /usr/local/bin/python
     ln -s /usr/local/bin/python-3.5.1/bin/python3.5 /usr/local/bin/python
-  when: result.rc != 0
+    ln -s /usr/local/bin/python-3.5.1/bin/pip /usr/local/bin/pip
+  when: result.rc != 0 or result.stderr != "Python 3.5.1"
