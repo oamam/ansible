@@ -1,12 +1,27 @@
 ---
+- name: install yum packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - openssl-devel
+    - glibc-headers
+    - readline
+    - libyaml-devel
+    - readline-devel
+    - zlib
+    - zlib-devel
+    - bzip2
+
 - name: check if you already have ruby installed
-  command: ruby --version
+  command: source ~/.bash_profile && ruby --version
   register: result
   changed_when: false
   ignore_errors: yes
 
 - name: install ruby
   shell: |
+    yum remove -y ruby
     cd ~
     wget http://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.2.tar.gz
     tar xvfz ruby-2.2.2.tar.gz
@@ -15,3 +30,9 @@
     make
     make install
   when: result.rc != 0
+
+- name: install bundle and rails
+  shell: |
+    source ~/.bash_profile
+    gem install bundler
+    gem install rails
