@@ -2,10 +2,10 @@
 - hosts: localhost
   become: yes
   roles:
-    - {role: selinux, tags: ["common"]}
-    - {role: base, tags: ["common"]}
-    - {role: apache, tags: ["php"]}
-    - {role: mysql, tags: ["common"]}
+    - {role: selinux, tags: ["selinux"]}
+    - {role: base, tags: ["base"]}
+    - {role: apache, tags: ["apache"]}
+    - {role: mysql, tags: ["mysql"]}
     - {role: php, tags: ["php"]}
     - {role: php7, tags: ["php7"]}
     - {role: ruby, tags: ["ruby"]}
