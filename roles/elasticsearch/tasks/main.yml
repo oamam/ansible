@@ -36,6 +36,7 @@
     /usr/share/elasticsearch/bin/plugin install license
     /usr/share/elasticsearch/bin/plugin install marvel-agent
     /usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head
+    /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-analysis-kuromoji/2.7.0
     /opt/kibana/bin/plugin --install elasticsearch/marvel/latest
     service elasticsearch restart
     service kibana restart
