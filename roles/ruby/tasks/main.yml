@@ -14,7 +14,7 @@
     - bzip2
 
 - name: check if you already have ruby installed
-  command: source ~/.bash_profile && ruby --version
+  command: /usr/local/bin/ruby --version
   register: result
   changed_when: false
   ignore_errors: yes
@@ -23,9 +23,9 @@
   shell: |
     yum remove -y ruby
     cd ~
-    wget http://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.2.tar.gz
-    tar xvfz ruby-2.2.2.tar.gz
-    cd ruby-2.2.2
+    wget http://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.gz
+    tar xvfz ruby-2.3.0.tar.gz
+    cd ruby-2.3.0
     ./configure
     make
     make install
@@ -33,6 +33,6 @@
 
 - name: install bundle and rails
   shell: |
-    source ~/.bash_profile
-    gem install bundler
-    gem install rails
+    /usr/local/bin/gem install bundler
+    /usr/local/bin/gem install rails
+    /usr/local/bin/gem install unicorn

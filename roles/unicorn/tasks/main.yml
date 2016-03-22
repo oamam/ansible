@@ -1,0 +1,10 @@
+---
+- name: deploy unicorn.rb
+  template:
+    src: unicorn.rb
+    dest: '{{ app_home_dir }}/config/unicorn.rb'
+
+- name: change mode of /run
+  file:
+    path: /run
+    mode: 0777
