@@ -5,17 +5,18 @@
     - {role: selinux, tags: ["selinux"]}
     - {role: base, tags: ["base"]}
     - {role: apache, tags: ["apache"]}
-    - {role: unicorn, tags: ["unicorn"]}
     - {role: nginx, tags: ["nginx"]}
     - {role: mysql, tags: ["mysql"]}
     - {role: php, tags: ["php"]}
     - {role: php7, tags: ["php7"]}
     - {role: ruby, tags: ["ruby"]}
+    - {role: unicorn, tags: ["unicorn"]}
     - {role: python, tags: ["python"]}
     - {role: elasticsearch, tags: ["elasticsearch"], private_ip: 192.168.34.205}
 
   vars:
-    app_home_dir: /home/vagrant/ruby/qiita_search
+    app_name: ror
+    app_home_dir: /home/vagrant/ruby
     mysql_root_password: password
     mysql_app_db: app_db
     mysql_app_user: app_user

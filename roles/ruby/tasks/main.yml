@@ -36,3 +36,14 @@
     /usr/local/bin/gem install bundler
     /usr/local/bin/gem install rails
     /usr/local/bin/gem install unicorn
+
+- name: check if you already have rails project
+  stat:
+    path: "{{ app_home_dir }}/{{ app_name }}"
+  register: has_project
+
+- name: create rails project
+  shell: |
+    cd '{{ app_home_dir }}'
+    /usr/local/bin/rails new '{{ app_name }}'
+  when: not has_project.stat.exists
