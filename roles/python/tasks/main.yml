@@ -1,4 +1,11 @@
 ---
+- name: install yum package
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - openssl-devel
+
 - name: check if you already have python installed
   command: python --version
   register: result

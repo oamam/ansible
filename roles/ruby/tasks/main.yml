@@ -39,11 +39,20 @@
 
 - name: check if you already have rails project
   stat:
-    path: "{{ app_home_dir }}/{{ app_name }}"
+    path: '{{ app_home_dir }}/{{ app_name }}'
   register: has_project
 
 - name: create rails project
   shell: |
     cd '{{ app_home_dir }}'
-    /usr/local/bin/rails new '{{ app_name }}'
+    /usr/local/bin/rails new '{{ app_name }}' -d mysql
   when: not has_project.stat.exists
+
+- name: deploy Gemfile
+  template:
+    src: Gemfile
+    dest: '{{ app_home_dir }}/{{ app_name }}/Gemfile'
+  when: not has_project.stat.exists
+
+- name: bundle install
+  command: cd '{{ app_home_dir }}/{{ app_name }}' && /usr/local/bin/bundle install
