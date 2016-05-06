@@ -2,9 +2,14 @@
 - name: deploy unicorn.rb
   template:
     src: unicorn.rb
-    dest: '{{ app_home_dir }}/{{ app_name }}/config/unicorn.rb'
+    dest: '/var/www/{{ app_name }}/config/unicorn.rb'
 
 - name: change mode of /run
   file:
     path: /run
     mode: 0777
+
+- name: deploy unicorn.service
+  template:
+    src: unicorn.service
+    dest: '/usr/lib/systemd/system/unicorn.service'

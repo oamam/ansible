@@ -15,3 +15,9 @@
     src: local.conf
     dest: /etc/nginx/conf.d/local.conf
   notify: restart nginx
+
+- name: launch nginx service
+  service:
+    name: nginx
+    state: started
+    enabled: yes

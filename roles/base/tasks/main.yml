@@ -1,4 +1,4 @@
-- name: 基本モジュール・ツールのインストール
+- name: Install yum packages
   yum:
     name: '{{ item }}'
     state: present
@@ -11,3 +11,4 @@
   service:
     name: firewalld
     state: stopped
+    enabled: no

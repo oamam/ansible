@@ -31,28 +31,33 @@
     make install
   when: result.rc != 0
 
-- name: install bundle and rails
-  shell: |
-    /usr/local/bin/gem install bundler
-    /usr/local/bin/gem install rails
-    /usr/local/bin/gem install unicorn
+- name: check if you already have bundler installed
+  command: /usr/local/bin/bundler --version | grep bundler | grep -v bundler
+  register: result
+  changed_when: false
+  ignore_errors: yes
+
+- name: install bundler
+  command: /usr/local/bin/gem install bundler
+  when: result.rc != 0
+
+- name: check if you already have rails installed
+  command: /usr/local/bin/rails --version | grep rails | grep -v rails
+  register: result
+  changed_when: false
+  ignore_errors: yes
+
+- name: install rails
+  command: /usr/local/bin/gem install rails
+  when: result.rc != 0
 
 - name: check if you already have rails project
   stat:
-    path: '{{ app_home_dir }}/{{ app_name }}'
-  register: has_project
+    path: '/var/www/{{ app_name }}/Gemfile'
+  register: is_file
 
 - name: create rails project
   shell: |
-    cd '{{ app_home_dir }}'
+    cd /var/www
     /usr/local/bin/rails new '{{ app_name }}' -d mysql
-  when: not has_project.stat.exists
-
-- name: deploy Gemfile
-  template:
-    src: Gemfile
-    dest: '{{ app_home_dir }}/{{ app_name }}/Gemfile'
-  when: not has_project.stat.exists
-
-- name: bundle install
-  command: cd '{{ app_home_dir }}/{{ app_name }}' && /usr/local/bin/bundle install
+  when: is_file.stat.md5 is not defined
