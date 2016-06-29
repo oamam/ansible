@@ -1,0 +1,6 @@
+- hosts: rails_sample
+  become: yes
+  roles:
+    - ruby
+  vars:
+    app_name: rails_sample

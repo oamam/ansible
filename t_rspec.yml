@@ -1,0 +1,6 @@
+- hosts: t_rspec
+  become: yes
+  roles:
+    - ruby
+  vars:
+    app_name: t-rspec

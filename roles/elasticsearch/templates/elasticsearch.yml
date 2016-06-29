@@ -95,18 +95,3 @@
 #
 # ---------------------------------- Custom -----------------------------------
 network.host: {{ private_ip }}
-index:
-  analysis:
-    tokenizer:
-      ngram_ja_tokenizer:
-        type: nGram
-        min_gram: 2
-        max_gram: 3
-        token_chars: [letter, digit]
-    analyzer:
-      ngram_ja:
-        type: custom
-        tokenizer: ngram_ja_tokenizer
-      kuromoji:
-        type: custom
-        tokenizer: kuromoji_tokenizer

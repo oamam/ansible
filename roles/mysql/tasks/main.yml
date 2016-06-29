@@ -36,16 +36,3 @@
     name: root
     password: "{{ mysql_root_password }}"
     check_implicit_admin: yes
-
-- name: データベース {{ mysql_app_db }} の作成
-  mysql_db:
-    name: "{{ mysql_app_db }}"
-    state: present
-
-- name: ユーザー "{{ mysql_app_user }}" の作成
-  mysql_user:
-    name: "{{ mysql_app_user }}"
-    password: "{{ mysql_app_password }}"
-    priv: "{{ mysql_app_db }}.*:ALL"
-    host: localhost
-    state: present

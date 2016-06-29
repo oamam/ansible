@@ -1,0 +1,8 @@
+- hosts: elasticsearch
+  become: yes
+  roles:
+    - base
+    - elasticsearch
+
+  vars:
+    private_ip: 192.168.3.10

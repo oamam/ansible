@@ -31,11 +31,19 @@
     src: kibana.yml
     dest: /opt/kibana/config/kibana.yml
 
-- name: install plugin
-  shell: |
-    /usr/share/elasticsearch/bin/plugin install license
-    /usr/share/elasticsearch/bin/plugin install marvel-agent
-    /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-analysis-kuromoji/2.7.0
-    /opt/kibana/bin/plugin --install elasticsearch/marvel/latest
-    service elasticsearch restart
-    service kibana restart
+# - name: install plugin
+#   shell: |
+#     /usr/share/elasticsearch/bin/plugin install analysis-kuromoji
+#     /opt/kibana/bin/kibana plugin --install elastic/sense
+
+- name: Start elasticsearch service
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
+
+- name: Start kibana service
+  service:
+    name: kibana
+    state: started
+    enabled: yes

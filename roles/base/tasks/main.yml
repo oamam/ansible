@@ -6,6 +6,9 @@
     - wget
     - git
     - tar
+    - bind-utils
+    - sysstat
+    - zip
 
 - name: stop firewalld
   service:

@@ -1,0 +1,15 @@
+- name: Deploy consul
+  copy:
+    src: /home/vagrant/consul/consul
+    dest: /usr/local/bin/consul
+    mode: 0755
+
+- name: Create /opt/consul directory
+  file:
+    path: /opt/consul
+    state: directory
+
+- name: Deploy web ui of consul
+  copy:
+    src: /home/vagrant/consul/web_ui
+    dest: /opt/consul/web_ui

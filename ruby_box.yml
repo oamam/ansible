@@ -1,0 +1,9 @@
+- hosts: ruby_box
+  become: yes
+  roles:
+    - ruby_box
+    - nginx
+    - mysql
+
+  vars:
+    mysql_root_password: password

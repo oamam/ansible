@@ -1,63 +1,51 @@
----
-- name: install yum packages
-  yum:
-    name: '{{ item }}'
-    state: present
-  with_items:
-    - openssl-devel
-    - glibc-headers
-    - readline
-    - libyaml-devel
-    - readline-devel
-    - zlib
-    - zlib-devel
-    - bzip2
-
-- name: check if you already have ruby installed
-  command: /usr/local/bin/ruby --version
-  register: result
-  changed_when: false
-  ignore_errors: yes
-
-- name: install ruby
-  shell: |
-    yum remove -y ruby
-    cd ~
-    wget http://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.gz
-    tar xvfz ruby-2.3.0.tar.gz
-    cd ruby-2.3.0
-    ./configure
-    make
-    make install
-  when: result.rc != 0
-
-- name: check if you already have bundler installed
-  command: /usr/local/bin/bundler --version | grep bundler | grep -v bundler
-  register: result
-  changed_when: false
-  ignore_errors: yes
-
-- name: install bundler
-  command: /usr/local/bin/gem install bundler
-  when: result.rc != 0
-
-- name: check if you already have rails installed
-  command: /usr/local/bin/rails --version | grep rails | grep -v rails
-  register: result
-  changed_when: false
-  ignore_errors: yes
-
-- name: install rails
-  command: /usr/local/bin/gem install rails
-  when: result.rc != 0
-
-- name: check if you already have rails project
+- name: Check if you already have rails project
   stat:
     path: '/var/www/{{ app_name }}/Gemfile'
   register: is_file
 
-- name: create rails project
+- name: Create new rails project
   shell: |
-    cd /var/www
-    /usr/local/bin/rails new '{{ app_name }}' -d mysql
+    cd /var/www/
+    /usr/local/bin/rails new {{ app_name }} -d mysql
   when: is_file.stat.md5 is not defined
+
+- name: Deploy Gemfile
+  template:
+    src: Gemfile
+    dest: "/var/www/{{ app_name }}/Gemfile"
+  become: yes
+  become_user: vagrant
+
+- name: Execute bundle install
+  shell: |
+    cd /var/www/{{ app_name }}
+    /usr/local/bin/bundle install
+  become: yes
+  become_user: vagrant
+
+- name: Deploy local.conf
+  template:
+    src: local.conf
+    dest: /etc/nginx/conf.d/local.conf
+  notify: restart nginx
+
+- name: Deploy unicorn.rb
+  template:
+    src: unicorn.rb
+    dest: '/var/www/{{ app_name }}/config/unicorn.rb'
+
+- name: Change mode of /run
+  file:
+    path: /run
+    mode: 0777
+
+- name: Deploy unicorn.service
+  template:
+    src: unicorn.service
+    dest: '/usr/lib/systemd/system/unicorn.service'
+
+- name: Start unicorn service
+  service:
+    name: unicorn
+    state: started
+    enabled: yes

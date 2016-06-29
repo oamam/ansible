@@ -1,0 +1,8 @@
+- name: Download and Install fluentd
+  shell: curl -L https://toolbelt.treasuredata.com/sh/install-redhat-td-agent2.sh | sh
+
+- name: Execute and Enable fluentd Service
+  service:
+    name: td-agent
+    state: started
+    enabled: yes
