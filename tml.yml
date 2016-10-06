@@ -1,0 +1,9 @@
+- hosts: server
+  become: yes
+  roles:
+    - base
+    - firewalld
+    - python
+    - elasticsearch
+  vars:
+    private_ip: 192.168.10.10

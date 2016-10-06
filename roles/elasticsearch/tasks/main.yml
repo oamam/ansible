@@ -1,18 +1,18 @@
 ---
-- name: import elasticsearch rpm
+- name: Import elasticsearch rpm
   command: rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
 
-- name: copy elasticsearch.repo template
+- name: Copy elasticsearch.repo template
   template:
     src: elasticsearch.repo
     dest: /etc/yum.repos.d/elasticsearch.repo
 
-- name: copy kibana.repo template
+- name: Copy kibana.repo template
   template:
     src: kibana.repo
     dest: /etc/yum.repos.d/kibana.repo
 
-- name: install elasticsearch and relational packages
+- name: Install elasticsearch and relational packages
   yum:
     name: '{{ item }}'
     state: present
@@ -20,21 +20,6 @@
     - java-1.8.0-openjdk.x86_64
     - elasticsearch
     - kibana
-
-- name: copy elasticsearch.yml template
-  template:
-    src: elasticsearch.yml
-    dest: /etc/elasticsearch/elasticsearch.yml
-
-- name: copy kibana.yml template
-  template:
-    src: kibana.yml
-    dest: /opt/kibana/config/kibana.yml
-
-# - name: install plugin
-#   shell: |
-#     /usr/share/elasticsearch/bin/plugin install analysis-kuromoji
-#     /opt/kibana/bin/kibana plugin --install elastic/sense
 
 - name: Start elasticsearch service
   service:
@@ -47,3 +32,24 @@
     name: kibana
     state: started
     enabled: yes
+
+- name: Copy elasticsearch.yml template
+  template:
+    src: elasticsearch.yml
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify: restart elasticsearch
+
+- name: Copy kibana.yml template
+  template:
+    src: kibana.yml
+    dest: /opt/kibana/config/kibana.yml
+  notify: restart kibana
+
+- name: Install plugin
+  shell: |
+    /usr/share/elasticsearch/bin/plugin install analysis-kuromoji
+    /usr/share/elasticsearch/bin/plugin install analysis-icu
+    /opt/kibana/bin/kibana plugin --install elastic/sense
+  notify:
+    - restart elasticsearch
+    - restart kibana

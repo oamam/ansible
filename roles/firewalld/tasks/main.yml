@@ -1,0 +1,5 @@
+- name: firewalld service の停止
+  service:
+    name: firewalld
+    state: stopped
+    enabled: yes

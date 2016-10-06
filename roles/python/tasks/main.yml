@@ -1,0 +1,34 @@
+- name: Install yum package
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - patch
+    - bzip2
+    - bzip2-devel
+    - zlib-devel
+    - libcurl-devel
+    - openssl
+
+- name: Deploy .bashrc for vagrant user
+  template:
+    src: .bashrc
+    dest: ~/.bashrc
+  become: yes
+  become_user: vagrant
+
+- name: Clone pyenv repository
+  git:
+    repo: git://github.com/yyuu/pyenv.git
+    dest: ~/.pyenv
+    refspec: master:refs/remotes/origin/master
+  become: yes
+  become_user: vagrant
+
+- name: Edit secure path
+  lineinfile: >-
+    dest=/etc/sudoers
+    state=present
+    backrefs=yes
+    regexp='^Defaults    secure_path*'
+    line='Defaults    env_keep += "PATH"\nDefaults    env_keep += "PYENV_ROOT"'

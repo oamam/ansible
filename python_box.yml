@@ -1,9 +1,0 @@
-- hosts: python_box
-  become: yes
-  roles:
-    - base
-    - python_box
-    - mysql
-
-  vars:
-    mysql_root_password: password
