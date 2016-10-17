@@ -1,0 +1,8 @@
+- hosts: server
+  become: yes
+  roles:
+    - base
+    - firewalld
+    - python
+  vars:
+    private_ip: 192.168.30.30
