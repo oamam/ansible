@@ -1,0 +1,36 @@
+- name: Dowonload phantomjs
+  get_url:
+    url: https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
+    dest: "{{ home_dir }}"
+    sha256sum: 86dd9a4bf4aee45f1a84c9f61cf1947c1d6dce9b9e8d2a907105da7852460d2f
+  become: yes
+  become_user: vagrant
+
+- name: Unarchive phantomjs
+  unarchive:
+    src: /home/vagrant/selenium/phantomjs-2.1.1-linux-x86_64.tar.bz2
+    dest: "{{ home_dir }}"
+
+- name: Copy phantomjs
+  copy:
+    src: /home/vagrant/selenium/phantomjs-2.1.1-linux-x86_64/bin/phantomjs
+    dest: "{{ home_dir }}"
+
+- name: Clone ghostdriver repository
+  git:
+    repo: git://github.com/detro/ghostdriver.git
+    dest: "{{ home_dir }}ghostdriver"
+    refspec: master:refs/remotes/origin/master
+  become: yes
+  become_user: vagrant
+
+- name: Deploy phantomjs.service
+  template:
+    src: phantomjs.service
+    dest: /etc/systemd/system/phantomjs.service
+
+- name: Executed phantomjs service
+  service:
+    name: phantomjs
+    state: started
+    enabled: yes

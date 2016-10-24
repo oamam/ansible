@@ -1,51 +1,45 @@
-- name: Check if you already have rails project
-  stat:
-    path: '/var/www/{{ app_name }}/Gemfile'
-  register: is_file
+---
+- name: install yum packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - openssl-devel
+    - glibc-headers
+    - readline
+    - libyaml-devel
+    - readline-devel
+    - zlib
+    - zlib-devel
+    - bzip2
 
-- name: Create new rails project
-  shell: |
-    cd /var/www/
-    /usr/local/bin/rails new {{ app_name }} -d mysql
-  when: is_file.stat.md5 is not defined
-
-- name: Deploy Gemfile
+- name: Deploy .bashrc for vagrant user
   template:
-    src: Gemfile
-    dest: "/var/www/{{ app_name }}/Gemfile"
+    src: .bashrc
+    dest: ~/.bashrc
   become: yes
   become_user: vagrant
 
-- name: Execute bundle install
-  shell: |
-    cd /var/www/{{ app_name }}
-    /usr/local/bin/bundle install
+- name: Clone rbenv repository
+  git:
+    repo: https://github.com/sstephenson/rbenv.git
+    dest: ~/.rbenv
+    refspec: master:refs/remotes/origin/master
   become: yes
   become_user: vagrant
 
-- name: Deploy local.conf
-  template:
-    src: local.conf
-    dest: /etc/nginx/conf.d/local.conf
-  notify: restart nginx
+- name: Clone rbenv repository
+  git:
+    repo: https://github.com/sstephenson/ruby-build.git
+    dest: ~/.rbenv/plugins/ruby-build
+    refspec: master:refs/remotes/origin/master
+  become: yes
+  become_user: vagrant
 
-- name: Deploy unicorn.rb
-  template:
-    src: unicorn.rb
-    dest: '/var/www/{{ app_name }}/config/unicorn.rb'
-
-- name: Change mode of /run
-  file:
-    path: /run
-    mode: 0777
-
-- name: Deploy unicorn.service
-  template:
-    src: unicorn.service
-    dest: '/usr/lib/systemd/system/unicorn.service'
-
-- name: Start unicorn service
-  service:
-    name: unicorn
-    state: started
-    enabled: yes
+- name: Edit secure path
+  lineinfile: >-
+    dest=/etc/sudoers
+    state=present
+    backrefs=yes
+    regexp='^Defaults    secure_path*'
+    line='Defaults    env_keep += "PATH"\nDefaults    env_keep += "RBENV_ROOT"'

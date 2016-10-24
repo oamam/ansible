@@ -1,0 +1,13 @@
+[Unit]
+Description=PhantomJS
+After=syslog.target network.target
+
+[Service]
+Type=simple
+
+ExecStart={{ home_dir }}phantomjs-2.1.1-linux-x86_64/bin/phantomjs {{ home_dir }}ghostdriver/src/main.js --hub=http://localhost:4444 --ip=127.0.0.1 --port=8003
+ExecStop=/bin/kill -s QUIT $MAINPID
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

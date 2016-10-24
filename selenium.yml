@@ -1,0 +1,11 @@
+- hosts: server
+  become: yes
+  roles:
+    - base
+    - firewalld
+    - php7
+    - selenium
+    - phantomjs
+  vars:
+    private_ip: 192.168.40.40
+    home_dir: /home/vagrant/selenium/

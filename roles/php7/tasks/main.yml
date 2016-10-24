@@ -1,4 +1,4 @@
-- name: php7 関連モジュールのインストール
+- name: Install php7 relational modules
   yum:
     name: '{{ item }}'
     state: present
@@ -23,28 +23,31 @@
     - libmcrypt-devel
     - php-intl
 
-- name: epel-release インストール
+- name: Install epel-release
   yum:
     name: epel-release
     state: present
 
-- name: remi-release-6.rpm の存在確認
-  command: rpm -q remi-release-6.6-2.el6.remi.noarch
-  register: result
-  changed_when: false
-  ignore_errors: yes
-
-- name: rpm -q remi-release-6.6-2.el6.remi.noarch 実行結果
-  debug:
-    var: result
-
-- name: remi-release-6.rpm のインストール
-  command: rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-  when: result.stdout.find('remi-release-6.6-2.el6.remi.noarch is not installed') != -1
-
-- name: php7 インストール
+- name: Install remi-release-7
   yum:
-    name: php
+    name: http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+    state: present
+
+- name: Install php7
+  yum:
+    name: "{{ item }}"
     state: present
     enablerepo: remi
     enablerepo: remi-php70
+  with_items:
+    - php
+    - php-xml
+
+- name: Install composer
+  shell: |
+    php -r "copy('https://getcomposer.org/installer', '/home/vagrant/selenium/composer-setup.php');"
+    php -r "if (hash_file('SHA384', '/home/vagrant/selenium/composer-setup.php') === 'e115a8dc7871f15d853148a7fbac7da27d6c0030b848d9b3dc09e2a0388afed865e6a3d6b3c0fad45c48e2b5fc1196ae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('/home/vagrant/selenium/composer-setup.php'); } echo PHP_EOL;"
+    php /home/vagrant/selenium/composer-setup.php --install-dir=/home/vagrant/selenium --filename=composer
+    php -r "unlink('/home/vagrant/selenium/composer-setup.php');"
+  become: yes
+  become_user: vagrant

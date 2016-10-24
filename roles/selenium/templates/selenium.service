@@ -1,0 +1,12 @@
+[Unit]
+Description=Selenium Standalone Server
+After=syslog.target network.target
+
+[Service]
+Type=simple
+ExecStart=/bin/java -jar {{ home_dir }}selenium-server-standalone-2.53.0.jar -role hub -log /tmp/selenium.log -Dphantomjs.binary.path={{ home_dir }}phantomjs-2.1.1-linux-x86_64/bin/phantomjs
+ExecStop=/bin/kill -s QUIT $MAINPID
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
