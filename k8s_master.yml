@@ -1,0 +1,6 @@
+- hosts: server
+  become: yes
+  roles:
+    - base
+    - firewalld
+    - k8s_master

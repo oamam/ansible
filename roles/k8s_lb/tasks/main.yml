@@ -1,0 +1,36 @@
+- name: Install k8s relational modules
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - kubernetes
+    - flannel
+    - docker-registry
+
+- name: Copy k8s template files
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+    - { src: 'config', dest: '/etc/kubernetes/config' }
+    - { src: 'kubelet', dest: '/etc/kubernetes/kubelet' }
+    - { src: 'docker', dest: '/etc/sysconfig/docker' }
+    - { src: 'flanneld', dest: '/etc/sysconfig/flanneld' }
+    - { src: 'hosts', dest: '/etc/hosts' }
+
+- name: Restart services
+  service:
+    name: '{{ item }}'
+    state: restarted
+    enabled: yes
+  with_items:
+    - kubelet
+    - flanneld
+    - docker
+    - kube-scheduler
+    - kube-proxy
+
+- name: Copy nginx template file
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf

@@ -1,0 +1,62 @@
+- name: Install k8s relational modules
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - kubernetes
+    - etcd
+    - flannel
+    - docker-registry
+
+- name: Create a access key to api server
+  shell: openssl genrsa -out /etc/kubernetes/serviceaccount.key 2048
+  become: yes
+
+- name: Copy template files
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+    - { src: 'apiserver', dest: '/etc/kubernetes/apiserver' }
+    - { src: 'config', dest: '/etc/kubernetes/config' }
+    - { src: 'controller-manager', dest: '/etc/kubernetes/controller-manager' }
+    - { src: 'kubelet', dest: '/etc/kubernetes/kubelet' }
+    - { src: 'flanneld', dest: '/etc/sysconfig/flanneld' }
+    - { src: 'docker', dest: '/etc/sysconfig/docker' }
+    - { src: 'etcd.conf', dest: '/etc/etcd/etcd.conf' }
+    - { src: 'hosts', dest: '/etc/hosts' }
+
+- name: Restart etcd service
+  service:
+    name: etcd
+    state: restarted
+
+- name: Get etcdctl value
+  shell: etcdctl ls --recursive
+  become: yes
+  register: result
+
+- name: Set for etcdctl key
+  shell: etcdctl mk /atomic.io/network/config '{"Network":"172.17.0.0/16"}'
+  become: yes
+  when: '"/atomic.io" not in result.stdout'
+
+- name: Restart services
+  service:
+    name: '{{ item }}'
+    state: restarted
+    enabled: yes
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kubelet
+    - flanneld
+    - docker
+    - kube-scheduler
+    - kube-proxy
+
+- name: Set kubectl config
+  shell: |
+    kubectl config set-cluster master --server=http://192.168.50.50:8080
+    kubectl config set-context master-context --cluster=master --user=vagrant
+    kubectl config use-context master-context

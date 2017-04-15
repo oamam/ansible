@@ -1,0 +1,7 @@
+- hosts: server
+  become: yes
+  roles:
+    - base
+    - firewalld
+    - nginx
+    - k8s_lb

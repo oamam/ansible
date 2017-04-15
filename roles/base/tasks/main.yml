@@ -9,6 +9,8 @@
     - bind-utils
     - sysstat
     - zip
+    - nc
+    - lsof
 
 - name: stop firewalld
   service:

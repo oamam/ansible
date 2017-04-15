@@ -1,10 +1,10 @@
 ---
-- name: httpd インストール
+- name: Install httpd
   yum:
     name: httpd
     state: present
 
-- name: httpd service の常時起動
+- name: Launch httpd service
   service:
     name: httpd
     state: started
