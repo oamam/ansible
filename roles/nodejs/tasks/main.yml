@@ -1,0 +1,12 @@
+- name: RPM Setup
+  shell: curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -
+
+- name: Install nodejs (+ npm)
+  yum:
+    name: nodejs
+    state: present
+
+- name: Install express
+  shell: |
+    npm install express --save
+    npm install express-generator -g

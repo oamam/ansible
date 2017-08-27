@@ -1,15 +1,15 @@
 ---
-- name: mysql community rpm の存在確認
-  command: rpm -q mysql-community-release-el6-5.noarch
+- name: Check mysql community rpm if exists
+  command: rpm -q mysql57-community-release-el7-11.noarch
   register: result
   changed_when: false
   ignore_errors: yes
 
-- name: mysql community rpm のインストール
-  command: rpm -ivh http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
-  when: result.stdout.find('mysql-community-release-el6-5.noarch is not installed') != -1
+- name: Install mysql community rpm
+  command: sudo rpm -Uvh http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+  when: result.stdout.find('mysql57-community-release-el7-11.noarch is not installed') != -1
 
-- name: mysql-server のインストール
+- name: Installe mysql
   yum:
     name: '{{ item }}'
     state: present
@@ -19,20 +19,14 @@
     - MySQL-python
     - libselinux-python
 
-- name: mysqld service の常時起動
+- name: Execute mysqld service
   service:
     name: mysqld
     state: started
     enabled: yes
 
-- name: my.cnf ファイルのコピー
+- name: Copy my.cnf
   template:
     src: .my.cnf.j2
-    dest: ~/.my.cnf
+    dest: /etc/my.cnf
   notify: restart mysqld
-
-- name: root アカウントのパスワードの設定
-  mysql_user:
-    name: root
-    password: "{{ mysql_root_password }}"
-    check_implicit_admin: yes

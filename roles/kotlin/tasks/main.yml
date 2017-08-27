@@ -1,0 +1,13 @@
+- name: Install sdkman
+  shell: curl -s "https://get.sdkman.io" | bash
+  become: yes
+  become_user: vagrant
+
+- name: Install kotlin
+  shell: |
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk install java
+    sdk install kotlin
+    sdk install gradle
+  become: yes
+  become_user: vagrant
