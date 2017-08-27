@@ -1,0 +1,12 @@
+- name: Download and Install go
+  shell: |
+    cd /tmp
+    wget https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
+    tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
+
+- name: Deploy .bashrc for vagrant user
+  template:
+    src: .bashrc
+    dest: ~/.bashrc
+  become: yes
+  become_user: vagrant
