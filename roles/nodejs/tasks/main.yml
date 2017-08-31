@@ -5,8 +5,3 @@
   yum:
     name: nodejs
     state: present
-
-- name: Install express
-  shell: |
-    npm install express --save
-    npm install express-generator -g

@@ -1,0 +1,11 @@
+- name: Install create-react-app, forever, webpack
+  npm:
+    name: '{{ item }}'
+    global: yes
+  with_items:
+    - express-generator
+    - create-react-app
+    - forever
+    - webpack
+  become: yes
+  become_user: root
