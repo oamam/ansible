@@ -5,6 +5,7 @@
   with_items:
     - express-generator
     - create-react-app
+    - http-server
     - forever
     - webpack
   become: yes
