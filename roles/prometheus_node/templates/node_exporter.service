@@ -1,0 +1,9 @@
+Description=Node Exporter
+
+[Service]
+Type=simple
+ExecStart=/bin/node_exporter
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

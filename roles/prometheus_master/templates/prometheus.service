@@ -1,0 +1,12 @@
+[Unit]
+Description=Prometheus Service
+After=syslog.target prometheus.service
+
+[Service]
+Type=simple
+EnvironmentFile=-/usr/local/prometheus-server/option
+ExecStart=/bin/prometheus $OPTIONS
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

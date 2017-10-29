@@ -1,0 +1,30 @@
+- name: Download node exporter
+  get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v0.15.0/node_exporter-0.15.0.linux-amd64.tar.gz
+    dest: /usr/local/src
+    sha256sum: 9413b3c94dbe9d4341ce85ea7e3f0e20abb8804135b8c236c4440c2c841551d7
+    force: yes
+
+- name: Check node exporter directory
+  stat:
+    path: /usr/local/node_exporter
+  register: fm
+
+- name: Unarchive and move node exporter package
+  shell: |
+    cd /usr/local/src
+    sudo tar -C /usr/local -xvf node_exporter-0.15.0.linux-amd64.tar.gz
+    cd /usr/local
+    sudo mv node_exporter-0.15.0.linux-amd64 node_exporter
+  when: not fm.stat.exists
+
+- name: Set symbolic links
+  file:
+    src: /usr/local/node_exporter/node_exporter
+    dest: /bin/node_exporter
+    state: link
+
+- name: Deploy node exporter service related files
+  template:
+    src: node_exporter.service
+    dest: /usr/lib/systemd/system/node_exporter.service

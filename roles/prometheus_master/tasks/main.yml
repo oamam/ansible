@@ -1,0 +1,36 @@
+- name: Download prometheus server
+  get_url:
+    url: https://github.com/prometheus/prometheus/releases/download/v1.8.0/prometheus-1.8.0.linux-amd64.tar.gz
+    dest: /usr/local/src
+    sha256sum: 5028defde39c4b9975b6174a2dbf29983cbae9f18e9d8313d9187d4b1078da27
+    force: yes
+
+- name: Check prometheus server directory
+  stat:
+    path: /usr/local/prometheus-server
+  register: fm
+
+- name: Unarchive and move prometheus server package
+  shell: |
+    cd /usr/local/src
+    sudo tar -C /usr/local -xvf prometheus-1.8.0.linux-amd64.tar.gz
+    cd /usr/local
+    sudo mv prometheus-1.8.0.linux-amd64 prometheus-server
+  when: not fm.stat.exists
+
+- name: Set symbolic links
+  file:
+    src: /usr/local/prometheus-server/{{ item.src }}
+    dest: /bin/{{ item.dest }}
+    state: link
+  with_items:
+    - { src: 'prometheus', dest: 'prometheus' }
+    - { src: 'promtool', dest: 'promtool' }
+
+- name: Deploy prometheus service related files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: 'option', dest: /usr/local/prometheus-server/option }
+    - { src: prometheus.service, dest: /usr/lib/systemd/system/prometheus.service }
