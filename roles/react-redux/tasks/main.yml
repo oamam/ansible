@@ -1,0 +1,17 @@
+- name: Install packages of the frontend related
+  shell: |
+    cd /home/vagrant/frontend
+    npm install --save react react-dom react-scripts
+    npm install --save prop-types
+    npm install --save redux redux-actions redux-logger redux-promise react-redux
+    npm install --save-dev redux-devtools
+    npm install --save isomorphic-fetch
+    npm install --save material-ui react-tap-event-plugin
+    npm install --save-dev webpack
+    npm install --save-dev webpack-dev-server
+    npm install --save-dev babel-core babel-loader babel-preset-react babel-preset-es2015
+    npm install --save-dev babel-plugin-transform-es2015-template-literals
+    npm install --save-dev babel-plugin-transform-object-rest-spread
+    npm install --save-dev css-loader style-loader source-map-loader
+    npm install --save-dev eslint eslint-loader babel-eslint
+    npm install --save-dev eslint-config-airbnb eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react
