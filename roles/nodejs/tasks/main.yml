@@ -1,5 +1,5 @@
 - name: RPM Setup
-  shell: curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -
+  shell: curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
 
 - name: Install nodejs (+ npm)
   yum:

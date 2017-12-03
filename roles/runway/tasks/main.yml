@@ -1,0 +1,9 @@
+- name: Install packages of the frontend related
+  shell: |
+    cd /home/vagrant/runway
+    npm install mocha chai --save-dev
+    npm install eslint eslint-loader babel-eslint --save-dev
+    npm install eslint-config-airbnb eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react --save-dev
+    npm install express morgan method-override body-parser cookie-parser --save
+    npm install express-generator npm-install-missing nodemon -g
+    npm install mongodb --save
